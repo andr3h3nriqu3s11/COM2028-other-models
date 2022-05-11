@@ -316,11 +316,11 @@
 		more from Max pooling.\\
 		\smallskip
 		As a final optimization this model was not loaded the images as 28 by 28 images but 32 by 32 upscaled images, as 
-		it provided more data to the model witch tends improve performance.
-
+		it provided more data to the model witch tends improve performance. After the model was build the model was run
+		but with gamma corrected images\cite{gamma_correction_1} which also improved performance.
 		\begin{tikzfigure}[Structure of each block]
 			\label{tab:structure-block}
-			\resizebox{.70\linewidth}{!}{
+			\resizebox{.64\linewidth}{!}{
 				\begin{tabular}{| c | c | c | c | c | c |}
 					\hline
 					Operation Layer      & Number of filters &  Size of each filter & stride value                            & padding                      & size of the output image \\
@@ -342,15 +342,16 @@
 		Then this sets of this blocks are used to create the full network.
 
 		\begin{tikzfigure}[Structure of the network]
-			\resizebox{.70\linewidth}{!}{
+			\label{best-of-best}
+			\resizebox{.64\linewidth}{!}{
 				\begin{tabular}{| c | c | c | c | c | c | c |}
 					\hline
 					Operation Layer & Size of The block & Number of filters &  Size of each filter & padding & Pooling function & size of the output image \\
 					\hline
 					Block           & 1                 & 64                &  1                   & same    & Average          & $32\times32\times64$     \\     
-					Block           & 3                 & 128               &  3                   & valid   & Average          & $16\times16\times128$    \\     
-					Block           & 4                 & 250               &  3                   & valid   & Average          & $8\times8\times250$      \\     
-					Block           & 5                 & 500               &  3                   & valid   & Average          & $4\times4\times500$      \\     
+					Block           & 2                 & 128               &  3                   & valid   & Average          & $16\times16\times128$    \\     
+					Block           & 2                 & 250               &  3                   & valid   & Average          & $8\times8\times250$      \\     
+					Block           & 2                 & 500               &  3                   & valid   & Average          & $4\times4\times500$      \\     
 					Block           & 1                 & 1000              &  3                   & same    & Average          & $4\times4\times1000$     \\     
 					\hline
 					Global Average  &                   &                   &                      &         &                  &                          \\                
@@ -365,25 +366,38 @@
 		Global average Pooling proved to be better than using dense layers, which is supported by other studies dealing 
 		with the classification other biomedical issues\cite{brain-cell-class, breast-cell-class}. And and this case the
 		model with global average pooling (Fig. \ref{global}) outperformed the one without global average pooling (Fig.
-		\ref{no-global})
+		\ref{no-global}).\\
 
-		This model was able to get an accuracy score of $66.8\%$.
+		A deeper(same structure but bigger block sizes) model, then the one shown in Fig. \ref{best-of-best} without gamma correction was able to get an accuracy 
+		score of $66.8\%$, while this smaller model was able to $67.23\%$.
 
-		\begin{minipage}[t]{.5\linewidth}
-			\begin{tikzfigure}[Results without global average]
+		\begin{minipage}[t]{.25\linewidth}
+			\begin{tikzfigure}[Results with larger model and without global average; gamma correction]
 				\label{no-global}
-				\includegraphics[width=.49\linewidth]{figures/block_cnn.png}
+				\includegraphics[width=.8\linewidth]{figures/block_cnn.png}
 			\end{tikzfigure}
 		\end{minipage}
-		\begin{minipage}[t]{.5\linewidth}
-			\begin{tikzfigure}[Results with global average]
+		\begin{minipage}[t]{.25\linewidth}
+			\begin{tikzfigure}[Results with larger model and without: gamma correction]
 				\label{global}
-				\includegraphics[width=.48\linewidth]{figures/block_cnn_better.png}
+				\includegraphics[width=.8\linewidth]{figures/block_cnn_better.png}
+			\end{tikzfigure}
+		\end{minipage}
+		\begin{minipage}[t]{.25\linewidth}
+			\begin{tikzfigure}[Final results]
+				\label{global}
+				\includegraphics[width=.84\linewidth]{figures/block_cnn_better_gamma.png}
+			\end{tikzfigure}
+		\end{minipage}
+		\begin{minipage}[t]{.25\linewidth}
+			\begin{tikzfigure}[Gamma corrected cell]
+				\label{global}
+				\includegraphics[width=.53\linewidth]{figures/gamma_addjusted.png}
 			\end{tikzfigure}
 		\end{minipage}
 	}
 	\block{\Large Results}{
-		\normalsize
+		\small
 		As it was mention before the model that resulted in better accuracy scores was the Block CNN model. \\
 		But this does not mean that it is the best model. I expect if the block CNN was applied with a multi model
 		approach it would out perform the main base block CNN model.\\
@@ -391,6 +405,7 @@
 		original paper\cite{data}, with a tool like AutoKeras\cite{autokeras}.\\
 		Since we only can submit one notebook, but more models were created the rest of the models can be found
 		in this GitHub repository: \url{https://github.com/andr3h3nriqu3s11/COM2028-other-models}
+		\vspace{1.2em}
 	}
 	\block[bodyinnersep=17pt]{\large References}{
 		\AtNextBibliography{\tiny}
